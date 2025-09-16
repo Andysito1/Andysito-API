@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar - Tienda</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Agregar Datos</h1>
+
+    <!-- Formulario Categoría -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Registrar Categoría</h5>
+        <form id="formCategoria">
+          <input type="text" id="nombreCategoria" placeholder="Nombre" class="form-control mb-2">
+          <button class="btn btn-primary">Registrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Formulario Producto -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Registrar Producto</h5>
+        <form id="formProducto">
+          <input type="text" id="nombreProducto" placeholder="Nombre" class="form-control mb-2">
+          <input type="number" id="precioProducto" placeholder="Precio" class="form-control mb-2">
+          <input type="number" id="categoriaProducto" placeholder="ID Categoría" class="form-control mb-2">
+          <button class="btn btn-success">Registrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Formulario Imagen -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Registrar Imagen</h5>
+        <form id="formImagen">
+          <input type="text" id="urlImagen" placeholder="URL de la imagen" class="form-control mb-2">
+          <input type="number" id="productoImagen" placeholder="ID Producto" class="form-control mb-2">
+          <button class="btn btn-warning">Registrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Botón para volver -->
+    <div class="mt-4 text-center">
+      <a href="index.html" class="btn btn-dark">Volver a Tienda</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="admin.js"></script>
+</body>
+</html>
