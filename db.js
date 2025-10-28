@@ -1,5 +1,3 @@
-const dns = require('dns');
-
 const { Pool } = require('pg');
 require('dotenv').config();
 const dns = require('dns');
@@ -16,4 +14,5 @@ db.connect()
   .catch(err => console.error('❌ Error al conectar:', err.message));
 
 module.exports = db;
+
 
