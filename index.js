@@ -1,33 +1,29 @@
 // index.js
-const express = require('express');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
-const bodyParser = require('body-parser');
-
-const cors = require('cors');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // ✅ Render asigna el puerto en una variable
+
 // Middlewares
-// --Permitir CORS
 app.use(cors());
-// --Parsear JSON en requests
 app.use(bodyParser.json());
+
 // Importar rutas
-const categoriasRoutes =
-require('./routes/categorias');
-const productosRoutes =
-require('./routes/productos');
-const imagenesRoutes =
-require('./routes/imagenes');
+const categoriasRoutes = require("./routes/categorias");
+const productosRoutes = require("./routes/productos");
+const imagenesRoutes = require("./routes/imagenes");
+
 // Registrar rutas
-app.use('/categorias',
-categoriasRoutes);
-app.use('/productos', productosRoutes);
-app.use('/imagenes', imagenesRoutes);
+app.use("/categorias", categoriasRoutes);
+app.use("/productos", productosRoutes);
+app.use("/imagenes", imagenesRoutes);
+
+// Servir archivos estáticos (si los usas)
+app.use(express.static("public"));
+
 // Iniciar servidor
 app.listen(PORT, () => {
-console.log(`Servidor corriendo en
-http://localhost:${PORT}`);
+  console.log(`✅ Servidor corriendo en el puerto ${PORT}`);
 });
-
-// Para usarlo de ruta estática jagfjkd
-app.use(express.static('public'));
