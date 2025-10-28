@@ -1,64 +1,151 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../db"); // Importa el pool de PostgreSQL
+const db = require('../db');
 
-// 🟢 Obtener todas las categorías
-router.get("/", async (req, res) => {
+/**
+ * @swagger
+ * tags:
+ *   name: Categorías
+ *   description: Endpoints para gestionar las categorías de productos
+ */
+
+/**
+ * @swagger
+ * /categorias:
+ *   get:
+ *     summary: Obtiene todas las categorías
+ *     tags: [Categorías]
+ *     responses:
+ *       200:
+ *         description: Lista de categorías obtenida correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   nombre:
+ *                     type: string
+ *                     example: Electronica
+ */
+router.get('/', async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM categorias ORDER BY id");
-    res.json(result.rows); // pg devuelve los datos en result.rows
+    const [rows] = await db.query('SELECT * FROM categorias');
+    res.json(rows);
   } catch (err) {
-    console.error("Error al obtener categorías:", err);
-    res.status(500).json({ error: "Error al obtener las categorías" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// 🟢 Crear nueva categoría
-router.post("/", async (req, res) => {
+/**
+ * @swagger
+ * /categorias:
+ *   post:
+ *     summary: Crea una nueva categoría
+ *     tags: [Categorías]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nombre
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 example: Juegos
+ *     responses:
+ *       200:
+ *         description: Categoría creada correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 3
+ *                 nombre:
+ *                   type: string
+ *                   example: Juegos
+ */
+router.post('/', async (req, res) => {
   const { nombre } = req.body;
   try {
-    const result = await db.query(
-      "INSERT INTO categorias (nombre) VALUES ($1) RETURNING *",
-      [nombre]
-    );
-    res.status(201).json(result.rows[0]);
+    const [result] = await db.query('INSERT INTO categorias (nombre) VALUES (?)', [nombre]);
+    res.json({ id: result.insertId, nombre });
   } catch (err) {
-    console.error("Error al crear categoría:", err);
-    res.status(500).json({ error: "Error al crear la categoría" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// 🟢 Actualizar categoría
-router.put("/:id", async (req, res) => {
+/**
+ * @swagger
+ * /categorias/{id}:
+ *   put:
+ *     summary: Actualiza una categoría existente
+ *     tags: [Categorías]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la categoría a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 example: Maquillaje
+ *     responses:
+ *       200:
+ *         description: Categoría actualizada correctamente
+ */
+router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { nombre } = req.body;
   try {
-    const result = await db.query(
-      "UPDATE categorias SET nombre = $1 WHERE id = $2 RETURNING *",
-      [nombre, id]
-    );
-    if (result.rowCount === 0)
-      return res.status(404).json({ error: "Categoría no encontrada" });
-
-    res.json(result.rows[0]);
+    await db.query('UPDATE categorias SET nombre = ? WHERE id = ?', [nombre, id]);
+    res.json({ id, nombre });
   } catch (err) {
-    console.error("Error al actualizar categoría:", err);
-    res.status(500).json({ error: "Error al actualizar la categoría" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// 🟢 Eliminar categoría
-router.delete("/:id", async (req, res) => {
+/**
+ * @swagger
+ * /categorias/{id}:
+ *   delete:
+ *     summary: Elimina una categoría por su ID
+ *     tags: [Categorías]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la categoría a eliminar
+ *     responses:
+ *       200:
+ *         description: Categoría eliminada correctamente
+ */
+router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await db.query("DELETE FROM categorias WHERE id = $1", [id]);
-    if (result.rowCount === 0)
-      return res.status(404).json({ error: "Categoría no encontrada" });
-
-    res.json({ mensaje: "Categoría eliminada correctamente" });
+    await db.query('DELETE FROM categorias WHERE id = ?', [id]);
+    res.json({ mensaje: 'Categoría eliminada' });
   } catch (err) {
-    console.error("Error al eliminar categoría:", err);
-    res.status(500).json({ error: "Error al eliminar la categoría" });
+    res.status(500).json({ error: err.message });
   }
 });
 
