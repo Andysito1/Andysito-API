@@ -1,13 +1,12 @@
 // db.js
-import pg from "pg";
-const { Pool } = pg;
+const { Pool } = require("pg");
 
-// Crear el pool de conexiones usando la variable de entorno de Render
+// Crear pool de conexiones usando la variable del entorno
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // necesario para conexiones seguras en Supabase
+    rejectUnauthorized: false // necesario para Supabase
   }
 });
 
-export default pool;
+module.exports = pool;
