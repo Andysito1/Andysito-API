@@ -6,14 +6,11 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // ======= MIDDLEWARES =======
-// Permitir CORS
 app.use(cors());
-// Parsear JSON en requests
 app.use(bodyParser.json());
-// Servir archivos estáticos
 app.use(express.static("public"));
 
 // ======= CONFIGURACIÓN SWAGGER =======
@@ -27,18 +24,15 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
-        description: "Servidor local",
+        url: process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`,
+        description: "Servidor de la API",
       },
     ],
   },
-  apis: ["./routes/*.js"], // Aquí Swagger buscará los comentarios en tus rutas
+  apis: ["./routes/*.js"],
 };
 
-// Genera la especificación
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-
-// Ruta de documentación (http://localhost:3000/api-docs)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ======= IMPORTAR RUTAS =======
@@ -46,13 +40,12 @@ const categoriasRoutes = require("./routes/categorias");
 const productosRoutes = require("./routes/productos");
 const imagenesRoutes = require("./routes/imagenes");
 
-// Registrar rutas
 app.use("/categorias", categoriasRoutes);
 app.use("/productos", productosRoutes);
 app.use("/imagenes", imagenesRoutes);
 
 // ======= INICIAR SERVIDOR =======
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`Documentación Swagger en http://localhost:${PORT}/api-docs`);
+  console.log(`✅ Servidor corriendo en el puerto ${PORT}`);
+  console.log(`📘 Swagger Docs: /api-docs`);
 });
