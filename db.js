@@ -1,12 +1,13 @@
 // db.js
-const mysql = require('mysql2');
-// Crear pool de conexiones para manejar múltiples requests
-const pool = mysql.createPool({
-host: 'localhost',
-user: 'root', // tu usuario de MySQL
-password: '', // tu contraseña de MySQL
-database: 'tienda'
+import pg from "pg";
+const { Pool } = pg;
+
+// Crear el pool de conexiones usando la variable de entorno de Render
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // necesario para conexiones seguras en Supabase
+  }
 });
-// Promisify para usar async/await
-const promisePool = pool.promise();
-module.exports = promisePool;
+
+export default pool;
